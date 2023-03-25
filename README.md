@@ -54,17 +54,17 @@
 
 ## 说明
 
-默认使用 Scotese, 2016 板块重建模型，该脚本还支持自定义板块重建模型和板块静态多边形文件，通过指定rot函数的参数 `rotation_file='xxx.rot',static_polygons='xxx.gpml'`来实现。
+默认使用 Scotese, 2016 板块重建模型，该脚本还支持自定义指定板块重建模型和板块静态多边形文件，通过指定rot()函数的参数 `rotation_file='xxx.rot',static_polygons='xxx.gpml'`来实现。
 
 原文件中包含了相关的模型文件，完整的板块重建模型下载地址：https://www.earthbyte.org/paleodem-resource-scotese-and-wright-2018/
 
-原文件列表
+该脚本相关文件列表
 
-    PALEOMAP_PlateModel.rot
-    PALEOMAP_PlatePolygons.gpml
-    RotFeatures.py
-    simple.csv
-    simple_rotatedScotese2016.csv
+    PALEOMAP_PlateModel.rot # Scotese, 2016 板块重建模型旋转文件
+    PALEOMAP_PlatePolygons.gpml # Scotese, 2016 板块重建模型静态多边形文件
+    RotFeatures.py # python脚本
+    simple.csv # 样例数据
+    simple_rotatedScotese2016.csv # 样例数据运行结果
 
 本脚本作者：程汉 中国地质大学（北京）
 
