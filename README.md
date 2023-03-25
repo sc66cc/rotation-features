@@ -63,6 +63,8 @@
     PALEOMAP_PlateModel.rot
     PALEOMAP_PlatePolygons.gpml
     RotFeatures.py
+    simple.csv
+    simple_rotatedScotese2016.csv
 
 本脚本作者：程汉 中国地质大学（北京）
 
