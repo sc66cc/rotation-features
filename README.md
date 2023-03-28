@@ -49,7 +49,7 @@
     xx/xxx (x.x%) cannot complete the rotation.
     Saving to file: xxxx_rotatedScotese2016.csv
     
-新的文件将以  原文件名_rotatedScotese2016.csv
+新的文件将以  原文件名_rotatedScotese2016.csv  保存在同一目录下
 
 
 ## 说明
@@ -68,6 +68,6 @@
 
 本脚本作者：程汉 中国地质大学（北京）
 
-参考代码原作者 Alexandre Pohl
+参考代码原作者 Alexandre Pohl  (CNRS Researcher)
 
 原代码参考地址：https://paleoclim-cnrs.github.io/documentation-processing/pyGplates/#python-code
