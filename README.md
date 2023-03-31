@@ -5,7 +5,7 @@
   
 ## Step 1 准备数据
 
-在输入的csv文件中，对表头的命名有以下规则
+输入的文件格式要求为逗号分隔的csv格式，编码方式选择`utf-8`，在输入的csv文件中，对表头的命名有以下规则
 
     经度：lng，纬度：lat，重建年龄：reconstruction_age
 如下图所示
@@ -13,24 +13,58 @@
 <img src="https://user-images.githubusercontent.com/90812672/227698606-0e30d528-14b6-42fa-b63a-7ecda749a01b.jpg" width="200" height="230">
 
 
-## Step 2 准备环境
+## Step 2 配置conda环境
 
-该脚本使用python语言编写，脚本运行环境为pygplates, pandas, numpy 这三个库，下面是安装库的相关方式。
+conda是一个常用的开源库管理、环境管理软件，我们选择在 conda 中创建虚拟环境来运行脚本，脚本的依赖库为pygplates, pandas, numpy，下面是使用conda创建相应的虚拟环境步骤。
 
-1. pygplates：由于pygplates库不能直接通过pip install pygplates直接安装，需要到EarthByte官网上按照他们提供的方式去安装。
+### 1. 安装miniconda
 
-官网地址    https://www.gplates.org/docs/pygplates/pygplates_getting_started.html#installation
+miniconda是一个精简安装版conda，只包括conda, python及相关的依赖。miniconda下载地址：[Miniconda - Download](https://docs.conda.io/en/latest/miniconda.html)
 
-2. 其他库的安装：
-`pip install pandas numpy`
+打开终端控制台（Windows系统，在脚本所在的文件夹地址栏中输入cmd），输入conda 查看是否安装成功，如成功为以下状态。
 
-检查环境：在你的终端控制台输入 `python` 激活python程序，输入以下命令
+<img src="https://user-images.githubusercontent.com/90812672/229004019-7011845e-e5c1-4897-9607-d8f7027afeaa.jpg" width="500" height="300">
 
-    import pygplates
-    import pandas
-    import numpy
-    
-如果没有出现任何报错信息，表示环境配置成功。
+
+
+### 2. 安装相关依赖
+
+打开终端控制台，输入下列命令
+
+**创建虚拟环境**
+
+```
+conda create -n pygplates_py38 python=3.8
+```
+
+**激活虚拟环境**
+
+Windows:
+
+```
+activate pygplates_py38
+```
+
+Linux or macOS:
+
+```
+conda activate pygplates_py38
+```                                                                                                                         
+
+**安装相关依赖包**
+
+```
+conda install -c conda-forge pygplates pandas numpy
+```
+
+**检查环境**
+
+```
+python -c "import pygplates;import pandas;import numpy; print(pygplates.__version__)"
+```
+
+如果未出现任何报错信息，并输出了`pygplates`版本，则说明该脚本的运行环境配置成功。
+
     
 ## Step 3 运行脚本
 
@@ -39,7 +73,7 @@
 <img src="https://user-images.githubusercontent.com/90812672/227700210-40816ae1-5a0f-463e-9059-71fc077d6d23.jpg" width="550" height="150">
 
 
-把数据、脚本放在同一个文件夹下，然后在文件夹的地址栏输入`cmd`调出控制台，输入以下命令：
+把数据、脚本放在同一个文件夹下，然后在文件夹的地址栏输入`cmd`调出控制台，激活先前配置好的conda虚拟环境，输入以下命令：
 
     python RotFeatures.py
     
