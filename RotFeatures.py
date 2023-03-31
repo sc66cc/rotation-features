@@ -3,26 +3,31 @@ import pygplates
 import numpy as np
 import os
 
-
-'''csv_filename, 
+'''
+csv_filename, 
 encoding_type='utf-8', 
 rotation_file = 'PALEOMAP_PlateModel.rot', 
-static_polygons = 'PALEOMAP_PlatePolygons.gpml
-默认编码方式utf-8, 旋转模型文件和静态多边形文件是Scotese, 2016
+static_polygons = 'PALEOMAP_PlatePolygons.gpml'
+默认编码方式utf-8
+由于陆壳和洋壳重建所使用的计算方式不同，Scotese模型不能用于计算计算洋壳上的点；
+如果计算的点大部分位于洋壳之上，需要把模型文件更换为Seton et al., 2012。
 可以通过指定rotation_file, static_polygons自定义模型文件和多边形文件
 '''
-
-
-def rot(csv_filename,
-        encoding_type='utf-8',
-        rotation_file='PALEOMAP_PlateModel.rot',
-        static_polygons='PALEOMAP_PlatePolygons.gpml'):
+        
+models = {
+    "Scotese2016":["PALEOMAP_PlateModel.rot","PALEOMAP_PlatePolygons.gpml"],
+    "Seton2012":["Seton_etal_ESR2012_2012.1.rot","Seton_etal_ESR2012_StaticPolygons_2012.1.gpmlz"]
+}
+def rotate_points(csv_filename, model, encoding_type='utf-8'):
+    
+    rotation_file = models[model][0]
+    static_polygons = models[model][1]
+    
     # 旋转模型文件和静态多边形文件，默认使用Scotese, 2016的模型
     rotation_model = pygplates.RotationModel(rotation_file)
-
     output_points = 'output_points.gpml'  # tmp file, removed at the end
 
-    df = pd.read_csv(csv_filename, encoding=encoding_type, low_memory=False)
+    df = pd.read_csv(csv_filename, low_memory=False)
 
     filtered_df = df.dropna(subset=['lng', 'lat'])
 
@@ -44,10 +49,6 @@ def rot(csv_filename,
         np.array(filtered_df['lon']))
     lat = np.squeeze(np.array(filtered_df['lat']))
 
-    # 旋转模型文件和静态多边形文件，默认使用Scotese, 2016的模型
-    rotation_model = pygplates.RotationModel('PALEOMAP_PlateModel.rot')
-    static_polygons = 'PALEOMAP_PlatePolygons.gpml'
-    output_points = 'output_points.gpml'  # tmp file, removed at the end
 
     input_points = []
     for i in np.arange(n_points):  # n_points (replace with e.g. 10000 to test script on a subset of data)
@@ -63,18 +64,16 @@ def rot(csv_filename,
         point_feature.set_geometry(point)
         point_features.append(point_feature)
 
-    # Use the static polygons to assign plate IDs and valid time periods.
-    # Each point feature is partitioned into one of the static polygons and assigned its
-    # reconstruction plate ID and valid time period.
+    # Use the static polygons (including oceanic age grids) to assign plate IDs and valid time periods.
     assigned_point_features = pygplates.partition_into_plates(
         static_polygons,
         rotation_model,
         point_features,
         properties_to_copy=[
             pygplates.PartitionProperty.reconstruction_plate_id,
-            pygplates.PartitionProperty.valid_time_period])
+            pygplates.PartitionProperty.valid_time_period],
+        partition_method = pygplates.PartitionMethod.most_overlapping_plate,) 
 
-    output_points = 'output_points.gpmlz'
     assigned_point_feature_collection = pygplates.FeatureCollection(assigned_point_features)
     assigned_point_feature_collection.write(output_points)
 
@@ -89,7 +88,8 @@ def rot(csv_filename,
     # 用于存放古经纬度的数组
     paleolat = np.full((n_points), np.nan)
     paleolon = np.full((n_points), np.nan)
-
+    plateid = np.full((n_points), np.nan)
+    
     counter = 0
     for feature in features:
         reconstruction_time = age_mid[counter]
@@ -101,14 +101,16 @@ def rot(csv_filename,
             # paleocoords[0].get_present_day_geometry().to_lat_lon_list()
             paleolat[counter] = paleocoords[0].get_reconstructed_geometry().to_lat_lon_list()[0][0]
             paleolon[counter] = paleocoords[0].get_reconstructed_geometry().to_lat_lon_list()[0][1]
+            plateid[counter] = feature.get_reconstruction_plate_id()
         else:
             paleolat[counter] = np.nan
             paleolon[counter] = np.nan
+            plateid[counter] = np.nan
         counter += 1
 
     filtered_df['paleolon'] = paleolon
     filtered_df['paleolat'] = paleolat
-
+    filtered_df['plateid'] = plateid
     # removing rows with no data
     n_noNA = filtered_df['paleolon'].isnull().sum()
     # PBDB_table_noNA = filtered_df.dropna(axis=0, how = 'any', inplace=False)
@@ -117,13 +119,16 @@ def rot(csv_filename,
     print(str(int(n_noNA)) + '/' + str(int(n_points))
           + ' (' + str(percent_droppedrows) + '%) cannot complete the rotation.')
 
+    os.remove('output_points.gpml')
     # writing to csv
-    outname = csv_filename[:-4] + '_rotatedScotese2016.csv'
+    outname = csv_filename[:-4] + '_rotated.csv'
     filtered_df.to_csv(outname, sep=',', encoding='utf-8')
     print('Saving to file: ' + outname)
-
-
+    
 if __name__ == '__main__':
-    csv_filename = 'simple.csv'  # 在此填入你的csv文件名 , 注意要跟该本文文件处在同一个目录中
-    # 新文件命名为simple_rotatedScotese2016.csv
-    rot(csv_filename)  # 编码方式，不填写的话默认为 utf-8
+    # 把simple.csv更改为你自己的数据文件。
+    csv_filename = 'ODP.csv'
+    # 如果计算点大多数在陆壳上，把model指定为Scotese2016，
+    # 如果大多数在洋壳上，更改model = "Seton2012"
+    rotate_points(csv_filename, model="Scotese2016")
+    
