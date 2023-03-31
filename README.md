@@ -88,7 +88,7 @@ python -c "import pygplates;import pandas;import numpy; print(pygplates.__versio
 
 ## 说明
 
-默认使用 Scotese, 2016 板块重建模型，该脚本还支持自定义指定板块重建模型和板块静态多边形文件，通过指定rot()函数的参数 `rotation_file='xxx.rot',static_polygons='xxx.gpml'`来实现。
+默认使用 Scotese, 2016 板块重建模型，该脚本还支持自定义指定板块重建模型和板块静态多边形文件，通过指定rotate_points()函数的参数 `model="xxxx"`来实现。
 
 原文件中包含了相关的模型文件，完整的板块重建模型下载地址：https://www.earthbyte.org/paleodem-resource-scotese-and-wright-2018/
 
@@ -96,9 +96,12 @@ python -c "import pygplates;import pandas;import numpy; print(pygplates.__versio
 
     PALEOMAP_PlateModel.rot # Scotese, 2016 板块重建模型旋转文件
     PALEOMAP_PlatePolygons.gpml # Scotese, 2016 板块重建模型静态多边形文件
+    Seton_etal_ESR2012_2012.1.rot # Seton et al., 2012 用于计算洋壳上点的模型文件
+    Seton_etal_ESR2012_StaticPolygons_2012.1.gpmlz # Seton et al., 2012 用于计算洋壳上点的静态多边形文件
     RotFeatures.py # python脚本
     simple.csv # 样例数据
     simple_rotatedScotese2016.csv # 样例数据运行结果
+    
 
 本脚本作者：程汉 中国地质大学（北京）
 
