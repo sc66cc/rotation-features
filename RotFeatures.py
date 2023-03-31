@@ -121,14 +121,12 @@ def rotate_points(csv_filename, model, encoding_type='utf-8'):
 
     os.remove('output_points.gpml')
     # writing to csv
-    outname = csv_filename[:-4] + '_rotated.csv'
+    outname = csv_filename[:-4] + '_rotated_{}.csv'.format(model)
     filtered_df.to_csv(outname, sep=',', encoding='utf-8')
     print('Saving to file: ' + outname)
     
 if __name__ == '__main__':
-    # 把simple.csv更改为你自己的数据文件。
-    csv_filename = 'ODP.csv'
     # 如果计算点大多数在陆壳上，把model指定为Scotese2016，
     # 如果大多数在洋壳上，更改model = "Seton2012"
-    rotate_points(csv_filename, model="Scotese2016")
+    rotate_points(csv_filename="simple.csv", model="Scotese2016")
     
