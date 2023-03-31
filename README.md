@@ -81,9 +81,9 @@ python -c "import pygplates;import pandas;import numpy; print(pygplates.__versio
 如果控制台输出以下内容，代表脚本执行成功。
 
     xx/xxx (x.x%) cannot complete the rotation.
-    Saving to file: xxxx_rotatedScotese2016.csv
+    Saving to file: xxxx_rotated_{model}.csv
     
-新的文件将以  原文件名_rotatedScotese2016.csv  保存在同一目录下
+新的文件将以  原文件名_rotated_{model}.csv  保存在同一目录下
 
 
 ## 说明
